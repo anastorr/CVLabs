@@ -27,7 +27,7 @@ def em(x, classes):
         p0 = np.sum(p0_x)/n
 
         p0_x = prob_update(theta0_new, theta1_new, x, p0)
-        p1_x = 1 - p0_x
+        p1_x = prob_update(theta1_new, theta0_new, x, 1-p0)
 
         delta = abs(theta0_new - theta0).max()
         theta0 = theta0_new
