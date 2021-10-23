@@ -1,6 +1,5 @@
 import numpy as np
 from keras.datasets import mnist
-from matplotlib import pyplot
 
 
 def prob_update(theta0, theta1, x, p):
@@ -20,7 +19,6 @@ def em(x, classes):
     theta1 = np.zeros(x.shape[1:])
 
     while delta > 0.001:
-        print('hop')
         theta0_new = np.sum(x * p0_x[:, np.newaxis, np.newaxis], axis=0) / np.sum(p0_x)
         theta1_new = np.sum(x * p1_x[:, np.newaxis, np.newaxis], axis=0) / np.sum(p1_x)
 
@@ -38,9 +36,10 @@ def em(x, classes):
 
 if __name__ == '__main__':
     # loading dataset
-    (train_X, train_y), (test_X, test_y) = mnist.load_data()
+    (train_X, train_y), _ = mnist.load_data()
     indices = np.argwhere((train_y == 0) | (train_y == 1))
     train_set = np.where(train_X[indices] > 0, 1, 0)
 
     theta0, theta1 = em(train_set, [0, 1])
-    print('hi')
+    np.save('zero.npy', theta0)
+    np.save('one.npy', theta1)
