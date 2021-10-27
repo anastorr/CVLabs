@@ -33,7 +33,7 @@ def em(x):
         theta0 = theta0_new
         theta1 = theta1_new
 
-    return theta0, theta1+1
+    return theta0, theta1
 
 
 if __name__ == '__main__':
