@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 import json
 
-
 if __name__ == '__main__':
     mu = np.load('mu.npy')
     sigma = np.load('sigma.npy')

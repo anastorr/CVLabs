@@ -8,7 +8,6 @@ def perceptron_gauss(train0, train1, n):
 
     # reserving space for eigenvectors
     train0 = np.concatenate((train0, np.ones((n, m)) * np.NaN), axis=0)
-    # train1 = np.concatenate((train1, np.ones((n, m)) * np.NaN), axis=0)
 
     stop = False
 
@@ -19,8 +18,8 @@ def perceptron_gauss(train0, train1, n):
 
         # adding eigenvectors that correspond to negative eigenvalues in training set
         neg_eig_vec = eig_vec.T[np.where(eig_val <= 0)[0]]
-        neg_eig_vec_quadr = np.reshape(np.einsum('...i,...j', neg_eig_vec, neg_eig_vec), (neg_eig_vec.shape[0], n**2))
-        constraints = np.concatenate((np.zeros((neg_eig_vec.shape[0], n+1)), neg_eig_vec_quadr), axis=1)
+        neg_eig_vec_quadr = np.reshape(np.einsum('...i,...j', neg_eig_vec, neg_eig_vec), (neg_eig_vec.shape[0], n ** 2))
+        constraints = np.concatenate((np.zeros((neg_eig_vec.shape[0], n + 1)), neg_eig_vec_quadr), axis=1)
 
         train0[-n:] = np.concatenate((constraints,
                                       np.ones((n - np.where(eig_val <= 0)[0].size, m)) * np.NaN), axis=0)
@@ -46,8 +45,10 @@ def perceptron_gauss(train0, train1, n):
 # retrieving distribution parameters from vector a
 def get_params(a, n):
     sigma = np.linalg.inv(np.reshape(a[-n ** 2:], (n, n)))
-    mu = -0.5*np.einsum('i,ij', a[1:n+1], sigma)
-    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - np.log(2*np.pi*np.sqrt(np.linalg.det(sigma))) + 0.5*a[0])
+    mu = -0.5 * np.einsum('i,ij', a[1:n + 1], sigma)
+    theta = np.e ** (
+                -0.5 * np.einsum('i,ij,j', mu, sigma, mu) - np.log(2 * np.pi * np.sqrt(np.linalg.det(sigma))) + 0.5 * a[
+            0])
     return mu, sigma, theta
 
 
