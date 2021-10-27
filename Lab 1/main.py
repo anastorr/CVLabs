@@ -1,5 +1,5 @@
 import numpy as np
-from keras.datasets import mnist
+from tensorflow.keras.datasets import mnist
 
 
 def prob_update(theta0, theta1, x, p):
