@@ -8,7 +8,7 @@ def perceptron_gauss(train0, train1, n):
 
     # reserving space for eigenvectors
     train0 = np.concatenate((train0, np.ones((n, m)) * np.NaN), axis=0)
-    train1 = np.concatenate((train1, np.ones((n, m)) * np.NaN), axis=0)
+    # train1 = np.concatenate((train1, np.ones((n, m)) * np.NaN), axis=0)
 
     stop = False
 
@@ -18,7 +18,7 @@ def perceptron_gauss(train0, train1, n):
         eig_val, eig_vec = np.linalg.eig(sigma)
 
         # adding eigenvectors that correspond to negative eigenvalues in training set
-        neg_eig_vec = eig_vec[np.where(eig_val <= 0)[0]]
+        neg_eig_vec = eig_vec.T[np.where(eig_val <= 0)[0]]
         neg_eig_vec_quadr = np.reshape(np.einsum('...i,...j', neg_eig_vec, neg_eig_vec), (neg_eig_vec.shape[0], n**2))
         constraints = np.concatenate((np.zeros((neg_eig_vec.shape[0], n+1)), neg_eig_vec_quadr), axis=1)
 
@@ -26,8 +26,8 @@ def perceptron_gauss(train0, train1, n):
                                       np.ones((n - np.where(eig_val <= 0)[0].size, m)) * np.NaN), axis=0)
 
         # computing dot product
-        temp0 = np.einsum('ij->i', train0 * a[np.newaxis, :])
-        temp1 = np.einsum('ij->i', train1 * a[np.newaxis, :])
+        temp0 = np.einsum('ij->i', train0 * a)
+        temp1 = np.einsum('ij->i', train1 * a)
 
         # finding examples that don't fit the current classification
         x0 = np.where(temp0 <= 0)[0]
@@ -46,17 +46,15 @@ def perceptron_gauss(train0, train1, n):
 # retrieving distribution parameters from vector a
 def get_params(a, n):
     sigma = np.linalg.inv(np.reshape(a[-n ** 2:], (n, n)))
-    mu = np.einsum('i,ij', a[1:n+1], sigma)
-    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - 0.5*np.log(2*np.pi*np.linalg.det(sigma)) + 0.5*a[0])
+    mu = -0.5*np.einsum('i,ij', a[1:n+1], sigma)
+    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - np.log(2*np.pi*np.sqrt(np.linalg.det(sigma))) + 0.5*a[0])
     return mu, sigma, theta
 
 
 if __name__ == '__main__':
     file1 = open('data/train_02.json')
-    file2 = open('data/train_01.json')
 
     train = json.load(file1)
-    test = json.load(file2)
 
     train_0 = np.array(train['outside'])
     train_1 = np.array(train['inside'])

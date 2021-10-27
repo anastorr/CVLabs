@@ -10,10 +10,8 @@ if __name__ == '__main__':
     theta = np.load('theta.npy')
 
     file1 = open('data/train_02.json')
-    file2 = open('data/train_01.json')
 
     train = json.load(file1)
-    test = json.load(file2)
 
     train_0 = np.array(train['outside'])
     train_1 = np.array(train['inside'])
@@ -25,10 +23,12 @@ if __name__ == '__main__':
 
     fig2 = plt.figure()
     ax2 = fig2.add_subplot(111)
-    ax2.contourf(x, y, z.pdf(pos))
-    ax2.contour(x, y, z.pdf(pos), levels=[theta])
+    c = ax2.contourf(x, y, z.pdf(pos))
+    plt.colorbar(c)
+    ax2.contour(x, y, z.pdf(pos), levels=[theta], colors='white', linestyles='dashed')
 
     ax2.scatter(train_1[:, 0], train_1[:, 1], c='white')
     ax2.scatter(train_0[:, 0], train_0[:, 1], c='red')
 
+    plt.show()
     plt.savefig('plot_train.png')
