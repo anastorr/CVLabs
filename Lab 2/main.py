@@ -6,14 +6,20 @@ def perceptron_gauss(train0, train1, n):
     m = train0.shape[1]
     a = np.zeros(m)
 
-    # train0 = np.concatenate((train0, np.ones((n, m)) * np.NaN), axis=0)
-    # train1 = np.concatenate((train1, np.ones((n, m)) * np.NaN), axis=0)
+    train0 = np.concatenate((train0, np.ones((n, m)) * np.NaN), axis=0)
+    train1 = np.concatenate((train1, np.ones((n, m)) * np.NaN), axis=0)
 
     stop = False
 
     while not stop:
-        # sigma = np.reshape(a[-n ** 2:], (n, n))
-        # eig_val, eig_vec = np.linalg.eig(sigma)
+        sigma = np.reshape(a[-n ** 2:], (n, n))
+        eig_val, eig_vec = np.linalg.eig(sigma)
+        neg_eig_vec = eig_vec[np.where(eig_val <= 0)[0]]
+        neg_eig_vec_quadr = np.reshape(np.einsum('...i,...j', neg_eig_vec, neg_eig_vec), (neg_eig_vec.shape[0], n**2))
+        constraints = np.concatenate((np.zeros((neg_eig_vec.shape[0], n+1)), neg_eig_vec_quadr), axis=1)
+
+        train0[-n:] = np.concatenate((constraints,
+                                      np.ones((n - np.where(eig_val <= 0)[0].size, m)) * np.NaN), axis=0)
 
         temp0 = np.einsum('ij->i', train0 * a[np.newaxis, :])
         temp1 = np.einsum('ij->i', train1 * a[np.newaxis, :])
@@ -30,8 +36,11 @@ def perceptron_gauss(train0, train1, n):
     return a
 
 
-def get_params(a):
-    return 0
+def get_params(a, n):
+    sigma = np.linalg.inv(np.reshape(a[-n ** 2:], (n, n)))
+    mu = np.einsum('i,ij', a[1:n+1], sigma)
+    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - np.log(2*np.pi*np.linalg.det(sigma)))
+    return mu, sigma, theta
 
 
 if __name__ == '__main__':
@@ -51,4 +60,4 @@ if __name__ == '__main__':
     kernel1 = np.concatenate((np.ones((train_1.shape[0], 1)), train_1, quadr1), axis=1)
 
     a = perceptron_gauss(kernel0, kernel1, train_0.shape[1])
-    params = get_params(a)
+    params = get_params(a, train_0.shape[1])
