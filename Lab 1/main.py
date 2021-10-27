@@ -7,9 +7,11 @@ def prob_update(theta0, theta1, x, p):
     return 1 / (1 + (1 - p) / p * product)
 
 
-def em(x, classes):
+def em(x):
     # initialising p(k|x) with random values
-    x = np.squeeze(x)
+    d = len(x.shape)
+    if d > 3:
+        x = np.squeeze(x)
     n = x.shape[0]
     p0_x = np.random.uniform(0, 1, n)
     p1_x = 1 - p0_x
@@ -31,7 +33,7 @@ def em(x, classes):
         theta0 = theta0_new
         theta1 = theta1_new
 
-    return (theta0, theta1)
+    return theta0, theta1
 
 
 if __name__ == '__main__':
@@ -40,6 +42,6 @@ if __name__ == '__main__':
     indices = np.argwhere((train_y == 0) | (train_y == 1))
     train_set = np.where(train_X[indices] > 0, 1, 0)
 
-    theta0, theta1 = em(train_set, [0, 1])
+    theta0, theta1 = em(train_set)
     np.save('zero.npy', theta0)
     np.save('one.npy', theta1)
