@@ -39,7 +39,7 @@ def perceptron_gauss(train0, train1, n):
 def get_params(a, n):
     sigma = np.linalg.inv(np.reshape(a[-n ** 2:], (n, n)))
     mu = np.einsum('i,ij', a[1:n+1], sigma)
-    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - np.log(2*np.pi*np.linalg.det(sigma)))
+    theta = np.e**(-0.5*np.einsum('i,ij,j', mu, sigma, mu) - 0.5*np.log(2*np.pi*np.linalg.det(sigma)) + 0.5*a[0])
     return mu, sigma, theta
 
 
@@ -61,3 +61,7 @@ if __name__ == '__main__':
 
     a = perceptron_gauss(kernel0, kernel1, train_0.shape[1])
     params = get_params(a, train_0.shape[1])
+
+    np.save('mu.npy', params[0])
+    np.save('sigma.npy', params[1])
+    np.save('theta.npy', params[2])
