@@ -4,12 +4,12 @@ import json
 
 def perceptron_gauss_train(train0, train1, n):
     # computing quadratic terms
-    quadr0 = np.reshape(np.einsum('...i,...j', train_0, train_0), (train_0.shape[0], train_0[0].size ** 2))
-    quadr1 = np.reshape(np.einsum('...i,...j', train_1, train_1), (train_1.shape[0], train_1[0].size ** 2))
+    quadr0 = np.reshape(np.einsum('...i,...j', train0, train0), (train0.shape[0], train0[0].size ** 2))
+    quadr1 = np.reshape(np.einsum('...i,...j', train1, train1), (train1.shape[0], train1[0].size ** 2))
 
     # creating kernel
-    kernel0 = np.concatenate((np.ones((train_0.shape[0], 1)), train_0, quadr0), axis=1)
-    kernel1 = np.concatenate((np.ones((train_1.shape[0], 1)), train_1, quadr1), axis=1)
+    kernel0 = np.concatenate((np.ones((train0.shape[0], 1)), train0, quadr0), axis=1)
+    kernel1 = np.concatenate((np.ones((train1.shape[0], 1)), train1, quadr1), axis=1)
 
     m = kernel0.shape[1]
     a = np.zeros(m)
