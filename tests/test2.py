@@ -1,4 +1,4 @@
-from main import perceptron_gauss_train, get_params
+from Lab2.main import perceptron_gauss_train, get_params
 import numpy as np
 
 

@@ -1,4 +1,4 @@
-from main import em
+from Lab1.main import em
 import numpy as np
 
 
