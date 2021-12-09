@@ -45,6 +45,7 @@ def AC(objects):
 
 
 def find_solution(objects):
+    objects = AC(objects)
     inv = 1
     while inv:
         i = np.argmax(np.count_nonzero(objects, axis=1) > 1)
@@ -59,7 +60,10 @@ def find_solution(objects):
                     objects = np.copy(temp)
                     break
         else:
-            return reformat_results(objects)
+            if not np.count_nonzero(objects):
+                return 'Немає розв\'язку!'
+            else:
+                return reformat_results(objects)
         # Якщо все викреслено, то задача не є інваріантною
         inv = 0
         return 'Задача не є інваріантною!'
@@ -71,7 +75,6 @@ def reformat_results(result):
 
 
 if __name__ == '__main__':
-    file = open('sudoku_01.json')
+    file = open('../tests/sudoku_04.json')
     sudoku, objects = load(file)
-    objects = AC(objects)
     print(find_solution(objects))
