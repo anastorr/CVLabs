@@ -75,6 +75,6 @@ def reformat_results(result):
 
 
 if __name__ == '__main__':
-    file = open('sudoku_04.json')
+    file = open('../tests/sudoku_04.json')
     sudoku, objects = load(file)
     print(find_solution(objects))
