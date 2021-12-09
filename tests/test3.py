@@ -3,12 +3,12 @@ import numpy as np
 
 
 def test_find_solution_1():
-    file = open('sudoku_03.json')
+    file = open('../Lab3/sudoku_03.json')
     sudoku, objects = load(file)
     assert find_solution(objects) == 'Немає розв\'язку!'
 
 
 def test_find_solution_2():
-    file = open('sudoku_04.json')
+    file = open('../Lab3/sudoku_04.json')
     sudoku, objects = load(file)
     assert find_solution(objects) == 'Немає розв\'язку!'
