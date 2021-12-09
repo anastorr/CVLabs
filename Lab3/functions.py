@@ -4,10 +4,19 @@ import json
 
 def load(file):
     sudoku = np.array(json.load(file))
-    return sudoku
+    states = np.array([np.arange(1, 10, 1)])
+    # create list of objects containing all possible states
+    objects = np.repeat(states, 81, 0)
+    # find indices of nonzero elements in initial sudoku
+    start_values_idx = sudoku.reshape(81).nonzero()
+    objects[start_values_idx] = 0
+    objects[start_values_idx, sudoku.reshape(81)[start_values_idx] - 1] = \
+        sudoku.reshape(81)[start_values_idx]
+    return sudoku, objects
 
 
-def neighbours_idx(idx, sudoku):
+# finds indices of neighbours for a specific object
+def neighbours_idx(idx):
     row = idx // 9
     col = idx % 9
     section_row = row // 3
@@ -21,20 +30,12 @@ def neighbours_idx(idx, sudoku):
     return neighb_idx
 
 
-def solve(sudoku):
-    states = np.array([np.arange(1, 10, 1)])
-    # create list of objects containing all possible states
-    objects = np.repeat(states, 81, 0)
-    # find indices of nonzero elements in initial sudoku
-    start_values_idx = sudoku.reshape(81).nonzero()
-    objects[start_values_idx] = 0
-    objects[start_values_idx, sudoku.reshape(81)[start_values_idx] - 1] = \
-        sudoku.reshape(81)[start_values_idx]
+def AC(objects):
     is_changed = 1
     while is_changed:
         is_changed = 0
         for i in range(objects.shape[0]):
-            neighb_idx = neighbours_idx(i, sudoku)
+            neighb_idx = neighbours_idx(i)
             for j in objects[i].nonzero()[0]:
                 flag = np.logical_and(objects[neighb_idx] != 0, objects[neighb_idx] != objects[i, j]).any(axis=1)
                 if not flag.all():
@@ -43,7 +44,34 @@ def solve(sudoku):
     return objects
 
 
+def find_solution(objects):
+    inv = 1
+    while inv:
+        i = np.argmax(np.count_nonzero(objects, axis=1) > 1)
+        if i:
+            iterable = objects[i].nonzero()[0]
+            for j in iterable:
+                temp = np.copy(objects)
+                temp[i] = 0
+                temp[i, j] = j + 1
+                temp = AC(temp)
+                if np.any(temp != 0):
+                    objects = np.copy(temp)
+                    break
+        else:
+            return reformat_results(objects)
+        # Якщо все викреслено, то задача не є інваріантною
+        inv = 0
+        return 'Задача не є інваріантною!'
+
+
+def reformat_results(result):
+    solution = result[result != 0].reshape(9, 9)
+    return solution
+
+
 if __name__ == '__main__':
     file = open('sudoku_01.json')
-    sudoku = load(file)
-    solve(sudoku)
+    sudoku, objects = load(file)
+    objects = AC(objects)
+    print(find_solution(objects))
