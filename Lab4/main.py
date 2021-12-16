@@ -40,13 +40,13 @@ if __name__ == "__main__":
     m = 5
     imgs = np.zeros((m, h, w, 3), dtype='int16')
     for i in range(1, 6):
-        imgs[i-1] = imread('image_0{}.png'.format(i))
+        imgs[i-1] = imread('images/image_0{}.png'.format(i))
     masks = np.zeros((m, h, w, 3), dtype='int16')
     for i in range(1, 6):
-        masks[i-1] = imread('mask_0{}.png'.format(i))
+        masks[i-1] = imread('masks/mask_0{}.png'.format(i))
 
     k = combine(imgs, masks[..., 0]/255, 1000, 10)
     result = imgs[k, np.arange(0, h, 1)[:, np.newaxis], np.arange(0, w, 1)[np.newaxis, :], :]
-    imwrite('result.png', result)
+    imwrite('results/result.png', result)
     print("--- %s seconds ---" % (time.time() - start_time))
 
