@@ -9,8 +9,8 @@ def norm_1(x):
 
 def abomination(q, g, h, w, m):
     f = np.zeros((m, h, w))
-    f_arg = np.zeros((m, h, w), dtype='int16')
-    for i in range(2, w):
+    f_arg = np.zeros((m, h, w+1), dtype='int16')
+    for i in range(2, w+1):
         f[..., -i] = np.min(f[..., -i+1] + q[:, :, -i+1] + g[:, :, :, -i+1], axis=1)
         f_arg[..., -i] = np.argmin(f[..., -i+1] + q[:, :, -i+1] + g[:, :, :, -i+1], axis=1)
     # solving for k*
