@@ -11,8 +11,7 @@ def abomination(q, g, h, w, m):
     f = np.zeros((m, h, w))
     f_arg = np.zeros((m, h, w), dtype='int16')
     for i in range(2, w):
-        f[..., -i] = np.min(f[np.newaxis, ..., -i+1].repeat(m, axis=0) + q[np.newaxis, :, :, -i+1].repeat(m, axis=0) +
-                            g[:, :, :, -i+1], axis=1)
+        f[..., -i] = np.min(f[..., -i+1] + q[:, :, -i+1] + g[:, :, :, -i+1], axis=1)
         f_arg[..., -i] = np.argmin(f[..., -i+1] + q[:, :, -i+1] + g[:, :, :, -i+1], axis=1)
     # solving for k*
     ans = np.zeros((h, w), dtype='int16')
@@ -46,7 +45,7 @@ if __name__ == "__main__":
     for i in range(1, 6):
         masks[i-1] = imread('mask_0{}.png'.format(i))
 
-    k = combine(imgs, masks[..., 0]/255, 10000, 100)
+    k = combine(imgs, masks[..., 0]/255, 1000, 10)
     result = imgs[k, np.arange(0, h, 1)[:, np.newaxis], np.arange(0, w, 1)[np.newaxis, :], :]
     imwrite('result.png', result)
     print("--- %s seconds ---" % (time.time() - start_time))
