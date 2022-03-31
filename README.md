@@ -10,5 +10,5 @@ Classification with perceptron. Input: two sets of random values with different 
 ## Lab 3
 Constraint satisfaction problem. Solving sudoku with arc consistency enforcing.
 
-## Lab 3
+## Lab 4
 Dynamic programming on path graphs. Photomontage. Input: images and binary masks. Output: combined images.
