@@ -30,5 +30,4 @@ if __name__ == '__main__':
     ax2.scatter(train_1[:, 0], train_1[:, 1], c='white')
     ax2.scatter(train_0[:, 0], train_0[:, 1], c='red')
 
-    plt.show()
     plt.savefig('plot_train.png')
